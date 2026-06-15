@@ -79,3 +79,11 @@ export async function switchToEvoz() {
         }
     }
 }
+
+export function getSigner() {
+    return signer;
+}
+
+export function getAddress() {
+    return userAddress;
+}
