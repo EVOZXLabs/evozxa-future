@@ -2,12 +2,14 @@ import { CONFIG } from "./config.js";
 
 export async function loadFactory(
     signer
-){
+) {
 
     const abi =
         await fetch(
             "./abi/factory.json"
-        ).then(r => r.json());
+        ).then(
+            r => r.json()
+        );
 
     return new ethers.Contract(
         CONFIG.FACTORY,
@@ -19,12 +21,14 @@ export async function loadFactory(
 
 export async function loadEvozx(
     signer
-){
+) {
 
     const abi =
         await fetch(
             "./abi/evozx.json"
-        ).then(r => r.json());
+        ).then(
+            r => r.json()
+        );
 
     return new ethers.Contract(
         CONFIG.EVOZX,
@@ -36,12 +40,14 @@ export async function loadEvozx(
 
 export async function loadExchange(
     signer
-){
+) {
 
     const abi =
         await fetch(
             "./abi/exchange.json"
-        ).then(r => r.json());
+        ).then(
+            r => r.json()
+        );
 
     return new ethers.Contract(
         CONFIG.EXCHANGE,
@@ -51,39 +57,54 @@ export async function loadExchange(
 
 }
 
-export function buildTokenConfig(
-    owner
-){
+export function buildTokenConfig() {
+
+    const marketingWalletInput =
+        document
+        .getElementById(
+            "marketingWallet"
+        )
+        ?.value
+        ?.trim();
+
+    const developmentWalletInput =
+        document
+        .getElementById(
+            "developmentWallet"
+        )
+        ?.value
+        ?.trim();
 
     return {
 
         name:
         document
         .getElementById("name")
-        .value
-        .trim(),
+        ?.value
+        ?.trim() || "",
 
         symbol:
         document
         .getElementById("symbol")
-        .value
-        .trim()
-        .toUpperCase(),
+        ?.value
+        ?.trim()
+        ?.toUpperCase() || "",
 
         supply:
         Number(
             document
             .getElementById("supply")
-            .value || 0
+            ?.value || 0
         ),
 
-        owner,
+        owner:
+        ethers.ZeroAddress,
 
         chainId:
-        CONFIG.CHAIN_ID,
+        0,
 
         launchKitVersion:
-        1,
+        0,
 
         burnable:
         document
@@ -104,25 +125,25 @@ export function buildTokenConfig(
         document
         .getElementById("websiteUrl")
         ?.value
-        .trim() || "",
+        ?.trim() || "",
 
         telegram:
         document
         .getElementById("telegramUrl")
         ?.value
-        .trim() || "",
+        ?.trim() || "",
 
         twitter:
         document
         .getElementById("twitterUrl")
         ?.value
-        .trim() || "",
+        ?.trim() || "",
 
         logoURI:
         document
         .getElementById("logoUrl")
         ?.value
-        .trim() || "",
+        ?.trim() || "",
 
         maxWalletEnabled:
         document
@@ -130,10 +151,15 @@ export function buildTokenConfig(
         ?.checked || false,
 
         maxWalletPercent:
-        Number(
-            document
-            .getElementById("maxWalletValue")
-            ?.value || 0
+        Math.min(
+            100,
+            Number(
+                document
+                .getElementById(
+                    "maxWalletValue"
+                )
+                ?.value || 0
+            )
         ),
 
         maxTxEnabled:
@@ -142,20 +168,29 @@ export function buildTokenConfig(
         ?.checked || false,
 
         maxTxPercent:
-        Number(
-            document
-            .getElementById("maxTxValue")
-            ?.value || 0
+        Math.min(
+            100,
+            Number(
+                document
+                .getElementById(
+                    "maxTxValue"
+                )
+                ?.value || 0
+            )
         ),
 
         tradingControlEnabled:
         document
-        .getElementById("tradingControl")
+        .getElementById(
+            "tradingControl"
+        )
         ?.checked || false,
 
         tradingEnabled:
         document
-        .getElementById("tradingEnabled")
+        .getElementById(
+            "tradingEnabled"
+        )
         ?.checked || false,
 
         buyTaxEnabled:
@@ -164,10 +199,15 @@ export function buildTokenConfig(
         ?.checked || false,
 
         buyTax:
-        Number(
-            document
-            .getElementById("buyTaxValue")
-            ?.value || 0
+        Math.min(
+            10,
+            Number(
+                document
+                .getElementById(
+                    "buyTaxValue"
+                )
+                ?.value || 0
+            )
         ),
 
         sellTaxEnabled:
@@ -176,33 +216,49 @@ export function buildTokenConfig(
         ?.checked || false,
 
         sellTax:
-        Number(
-            document
-            .getElementById("sellTaxValue")
-            ?.value || 0
+        Math.min(
+            10,
+            Number(
+                document
+                .getElementById(
+                    "sellTaxValue"
+                )
+                ?.value || 0
+            )
         ),
 
         burnTaxShare:
-        Number(
-            document
-            .getElementById("burnTaxShare")
-            ?.value || 0
+        Math.min(
+            100,
+            Number(
+                document
+                .getElementById(
+                    "burnTaxShare"
+                )
+                ?.value || 0
+            )
         ),
 
         marketingWallet:
-        document
-        .getElementById("marketingWallet")
-        ?.value
-        .trim()
-        ||
+
+        marketingWalletInput &&
+        ethers.isAddress(
+            marketingWalletInput
+        )
+        ?
+        marketingWalletInput
+        :
         ethers.ZeroAddress,
 
         developmentWallet:
-        document
-        .getElementById("developmentWallet")
-        ?.value
-        .trim()
-        ||
+
+        developmentWalletInput &&
+        ethers.isAddress(
+            developmentWalletInput
+        )
+        ?
+        developmentWalletInput
+        :
         ethers.ZeroAddress
 
     };
@@ -211,7 +267,7 @@ export function buildTokenConfig(
 
 export function validateConfig(
     config
-){
+) {
 
     if(
         !config.name
@@ -229,6 +285,16 @@ export function validateConfig(
 
         throw new Error(
             "Token symbol required"
+        );
+
+    }
+
+    if(
+        config.symbol.length < 2
+    ){
+
+        throw new Error(
+            "Symbol too short"
         );
 
     }
@@ -301,6 +367,44 @@ export function validateConfig(
         throw new Error(
             "Max Tx must be between 1 and 100"
         );
+
+    }
+
+    if(
+        config.marketingWallet !==
+        ethers.ZeroAddress
+    ){
+
+        if(
+            !ethers.isAddress(
+                config.marketingWallet
+            )
+        ){
+
+            throw new Error(
+                "Invalid marketing wallet"
+            );
+
+        }
+
+    }
+
+    if(
+        config.developmentWallet !==
+        ethers.ZeroAddress
+    ){
+
+        if(
+            !ethers.isAddress(
+                config.developmentWallet
+            )
+        ){
+
+            throw new Error(
+                "Invalid development wallet"
+            );
+
+        }
 
     }
 
