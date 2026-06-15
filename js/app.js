@@ -14,7 +14,9 @@ calculateFee
 
 import {
 loadFactory,
-loadEvozx
+loadEvozx,
+buildTokenConfig,
+validateConfig
 } from "./deploy.js";
 
 const connectBtn =
@@ -194,6 +196,20 @@ return;
 const factory =
 await loadFactory(
 signer
+);
+
+const config =
+buildTokenConfig(
+getAddress()
+);
+
+validateConfig(
+config
+);
+
+console.log(
+"CONFIG",
+config
 );
 
 const evozx =
