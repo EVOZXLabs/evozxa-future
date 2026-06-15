@@ -6,6 +6,10 @@ import {
 loadBalances
 } from "./balance.js";
 
+import {
+calculateFee
+} from "./pricing.js";
+
 const connectBtn =
 document.getElementById("connectBtn");
 
@@ -65,4 +69,64 @@ balances.evozx
         }
 
     }
+
+const featureIds = [
+
+"burnable",
+"mintable",
+"ownership",
+
+"maxWallet",
+"maxTx",
+
+"tradingControl",
+
+"buyTax",
+"sellTax",
+
+"website",
+"telegram",
+"twitter",
+"logo"
+
+];
+
+function updateFee() {
+
+const features = {};
+
+featureIds.forEach(id => {
+
+features[id] =
+document.getElementById(id)?.checked;
+
+});
+
+const total =
+calculateFee(features);
+
+document.getElementById(
+"evozxFee"
+).textContent = total;
+
+document.getElementById(
+"evozFee"
+).textContent =
+total * 5;
+
+}
+
+featureIds.forEach(id => {
+
+document
+.getElementById(id)
+?.addEventListener(
+"change",
+updateFee
+);
+
+});
+
+updateFee();
+
 );
