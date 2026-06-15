@@ -1,5 +1,7 @@
 import {
-connectWallet
+connectWallet,
+getSigner,
+getAddress
 } from "./wallet.js";
 
 import {
@@ -9,6 +11,11 @@ loadBalances
 import {
 calculateFee
 } from "./pricing.js";
+
+import {
+loadFactory,
+loadEvozx
+} from "./deploy.js";
 
 const connectBtn =
 document.getElementById("connectBtn");
@@ -165,3 +172,63 @@ updateFee
 });
 
 updateFee();
+
+const deployBtn =
+document.getElementById(
+"deployBtn"
+);
+
+deployBtn.addEventListener(
+"click",
+async () => {
+
+try {
+
+const signer =
+getSigner();
+
+if(!signer){
+
+alert(
+"Connect wallet first"
+);
+
+return;
+}
+
+const factory =
+await loadFactory(
+signer
+);
+
+const evozx =
+await loadEvozx(
+signer
+);
+
+console.log(
+"Factory Loaded",
+factory.target
+);
+
+console.log(
+"EVOZX Loaded",
+evozx.target
+);
+
+alert(
+"Deploy engine initialized"
+);
+
+}
+catch(error){
+
+console.error(error);
+
+alert(
+error.message
+);
+
+}
+
+});
