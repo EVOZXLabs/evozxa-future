@@ -35,6 +35,28 @@ document.getElementById(
     "connectBtn"
 );
 
+const deployBtn =
+document.getElementById(
+    "deployBtn"
+);
+
+
+
+function setDeployStatus(
+    text
+){
+    console.log(text);
+
+    const el =
+    document.getElementById(
+        "deployStatus"
+    );
+
+    if(el){
+        el.textContent = text;
+    }
+}
+
 
 
 connectBtn?.addEventListener(
@@ -69,7 +91,8 @@ connectBtn?.addEventListener(
             console.error(error);
 
             alert(
-                error.message
+                error.message ||
+                "Wallet connection failed"
             );
 
         }
@@ -110,20 +133,20 @@ async function refreshBalances(){
 
 
 
-const deployBtn =
-document.getElementById(
-    "deployBtn"
-);
-
-
-
 deployBtn?.addEventListener(
     "click",
     async () => {
 
         try {
 
-            deployBtn.disabled = true;
+            deployBtn.disabled =
+            true;
+
+            setDeployStatus(
+                "Preparing deployment..."
+            );
+
+
 
             const signer =
             getSigner();
@@ -135,6 +158,8 @@ deployBtn?.addEventListener(
                 );
 
             }
+
+
 
             const factory =
             await loadFactory(
@@ -149,9 +174,7 @@ deployBtn?.addEventListener(
 
 
             const config =
-            buildTokenConfig(
-                getAddress()
-            );
+            buildTokenConfig();
 
 
 
@@ -161,10 +184,18 @@ deployBtn?.addEventListener(
 
 
 
+            setDeployStatus(
+                "Checking symbol..."
+            );
+
+
+
             const exists =
             await factory.symbolExists(
                 config.symbol
             );
+
+
 
             if(exists){
 
@@ -176,6 +207,12 @@ deployBtn?.addEventListener(
 
 
 
+            setDeployStatus(
+                "Calculating deployment fee..."
+            );
+
+
+
             const fee =
             await factory.getDeploymentFee(
                 config
@@ -184,48 +221,65 @@ deployBtn?.addEventListener(
 
 
             console.log(
-                "Fee EVOZX:",
+                "Deployment Fee:",
                 ethers.formatEther(
                     fee
-                )
+                ),
+                "EVOZX"
             );
 
 
 
-            let balance =
+            let evozxBalance =
             await evozx.balanceOf(
                 getAddress()
             );
 
 
 
-            if(balance < fee){
+            if(evozxBalance < fee){
 
                 const missing =
                     fee -
-                    balance;
+                    evozxBalance;
 
-                console.log(
-                    "Buying missing EVOZX..."
+                setDeployStatus(
+                    "Buying EVOZX automatically..."
                 );
+
+
 
                 await buyMissingEVOZX(
                     signer,
-                    Number(
-                        ethers.formatEther(
-                            missing
-                        )
-                    )
+                    missing
                 );
 
 
 
-                balance =
+                evozxBalance =
                 await evozx.balanceOf(
                     getAddress()
                 );
 
+
+
+                if(
+                    evozxBalance < fee
+                ){
+
+                    throw new Error(
+                        "Auto EVOZX purchase failed"
+                    );
+
+                }
+
             }
+
+
+
+            setDeployStatus(
+                "Approving EVOZX..."
+            );
 
 
 
@@ -239,10 +293,6 @@ deployBtn?.addEventListener(
 
             if(allowance < fee){
 
-                console.log(
-                    "Approving EVOZX..."
-                );
-
                 const approveTx =
                 await evozx.approve(
                     CONFIG.FACTORY,
@@ -255,8 +305,8 @@ deployBtn?.addEventListener(
 
 
 
-            console.log(
-                "Creating Token..."
+            setDeployStatus(
+                "Deploying token..."
             );
 
 
@@ -289,10 +339,11 @@ deployBtn?.addEventListener(
                         log
                     );
 
+
+
                     if(
 
                         parsed &&
-
                         parsed.name ===
                         "TokenCreated"
 
@@ -306,8 +357,7 @@ deployBtn?.addEventListener(
                     }
 
                 }
-                catch{}
-
+                catch(err){}
             }
 
 
@@ -327,26 +377,34 @@ deployBtn?.addEventListener(
 
 
             const explorerUrl =
-            `${CONFIG.EXPLORER}/address/${tokenAddress}`;
+            `${CONFIG.EXPLORER}/token/${tokenAddress}`;
+
+
+
+            setDeployStatus(
+                "Deployment completed"
+            );
 
 
 
             alert(
 
-`Token deployed successfully
+`🚀 TOKEN DEPLOYED
 
-Address:
+Token Address:
 ${tokenAddress}
 
 Explorer:
-${explorerUrl}`
+${explorerUrl}
+
+Verification package can now be downloaded from LaunchFuture.`
 
             );
 
 
 
             console.log(
-                "TOKEN",
+                "TOKEN DEPLOYED",
                 tokenAddress
             );
 
@@ -355,10 +413,20 @@ ${explorerUrl}`
 
             console.error(error);
 
-            alert(
-                error.reason ||
-                error.message ||
+            setDeployStatus(
                 "Deployment failed"
+            );
+
+            alert(
+
+                error.reason ||
+
+                error.shortMessage ||
+
+                error.message ||
+
+                "Deployment failed"
+
             );
 
         }
