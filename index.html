@@ -8,6 +8,7 @@
 
 <link rel="stylesheet" href="./css/app.css">
 
+<!-- FONT -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -17,35 +18,46 @@
 
 <body>
 
+<!-- BACKGROUND LAYERS -->
 <div class="bg-grid"></div>
 <div class="bg-glow"></div>
 
 <div id="app">
 
+<!-- ================= TOPBAR ================= -->
 <header class="topbar">
+
 <div class="brand">
 <img src="./images/logo.png" alt="EVOZXA">
 <span>EVOZXA FUTURE</span>
 </div>
 
+<div class="top-actions">
 <button id="connectBtn">Connect Wallet</button>
+</div>
+
 </header>
 
+<!-- ================= MAIN ================= -->
 <main class="container">
 
-<!-- HERO -->
+<!-- ================= HERO ================= -->
 <section class="hero">
 
 <h1 id="heroText">Create Professional Tokens On EVOZ</h1>
 
-<p>Deploy, Verify and Manage smart contracts directly on EVOZ Mainnet.</p>
+<p>
+Deploy, Verify and Manage smart contracts directly on EVOZ Mainnet.
+</p>
 
+<!-- STATUS -->
 <div class="status-indicator">
 <span class="dot"></span>
 <span id="statusText">SYSTEM READY</span>
 </div>
 
-<div class="wallet-info">
+<!-- WALLET PANEL -->
+<div id="walletInfo" class="wallet-info">
 
 <div class="wallet-item">
 <span>Wallet</span>
@@ -66,31 +78,25 @@
 
 </section>
 
-<!-- GRID -->
+<!-- ================= GRID ================= -->
 <div class="grid">
 
-<!-- LEFT -->
+<!-- ================= LEFT: FORM ================= -->
 <section class="card">
 
-<h2>Deploy Wizard</h2>
+<h2>Token Configuration</h2>
 
 <form id="tokenForm">
 
 <!-- BASIC -->
-<div class="step" id="step-basic">
-
-<h3>1. Basic Info</h3>
-
-<input id="name" type="text" placeholder="Token Name">
-<input id="symbol" type="text" placeholder="Symbol">
-<input id="supply" type="number" placeholder="Total Supply">
-
-</div>
+<input id="name" type="text" placeholder="Token Name" />
+<input id="symbol" type="text" placeholder="Symbol" />
+<input id="supply" type="number" placeholder="Total Supply" />
 
 <!-- FEATURES -->
-<div class="step" id="step-features" style="display:none">
+<div class="features-box">
 
-<h3>2. Features</h3>
+<h3>Features</h3>
 
 <div class="feature-list">
 
@@ -100,75 +106,65 @@
 <label><input type="checkbox" id="maxWallet"><span>Max Wallet</span></label>
 <label><input type="checkbox" id="maxTx"><span>Max TX</span></label>
 <label><input type="checkbox" id="tradingControl"><span>Trading Control</span></label>
+<label><input type="checkbox" id="buyTax"><span>Buy Tax</span></label>
+<label><input type="checkbox" id="sellTax"><span>Sell Tax</span></label>
+<label><input type="checkbox" id="website"><span>Website</span></label>
+<label><input type="checkbox" id="telegram"><span>Telegram</span></label>
+<label><input type="checkbox" id="twitter"><span>Twitter</span></label>
+<label><input type="checkbox" id="logo"><span>Logo</span></label>
 
 </div>
 
 </div>
+
+<!-- METADATA -->
+<div class="advanced-box">
+
+<h3>Metadata</h3>
+
+<input id="websiteUrl" type="text" placeholder="Website URL" />
+<input id="telegramUrl" type="text" placeholder="Telegram URL" />
+<input id="twitterUrl" type="text" placeholder="Twitter URL" />
+<input id="logoUrl" type="text" placeholder="Logo URL" />
 
 <!-- ADVANCED -->
-<div class="step" id="step-advanced" style="display:none">
+<h3 class="section-space">Advanced Settings</h3>
 
-<h3>3. Advanced Settings</h3>
+<input id="buyTaxValue" type="number" placeholder="Buy Tax %" />
+<input id="sellTaxValue" type="number" placeholder="Sell Tax %" />
+<input id="maxWalletValue" type="number" placeholder="Max Wallet %" />
+<input id="maxTxValue" type="number" placeholder="Max TX %" />
+<input id="burnTaxShare" type="number" placeholder="Burn Tax Share %" />
 
-<input id="buyTaxValue" type="number" placeholder="Buy Tax %">
-<input id="sellTaxValue" type="number" placeholder="Sell Tax %">
-<input id="maxWalletValue" type="number" placeholder="Max Wallet %">
-<input id="maxTxValue" type="number" placeholder="Max TX %">
-<input id="burnTaxShare" type="number" placeholder="Burn Tax Share %">
-
-</div>
-
-<!-- REVIEW -->
-<div class="step" id="step-review" style="display:none">
-
-<h3>4. Final Review</h3>
-
-<div id="reviewBox"></div>
-
-<p style="color:#94a3b8; margin-top:10px;">
-Check all details before deployment. This action cannot be undone.
-</p>
+<input id="marketingWallet" type="text" placeholder="Marketing Wallet" />
+<input id="developmentWallet" type="text" placeholder="Development Wallet" />
 
 </div>
 
 </form>
 
-<!-- NAV -->
-<div style="display:flex; gap:10px; margin-top:16px;">
-<button type="button" id="backBtn">Back</button>
-<button type="button" id="nextBtn">Next</button>
-</div>
-
 </section>
 
-<!-- RIGHT -->
+<!-- ================= RIGHT: DEPLOY ================= -->
 <section class="card">
 
-<h2>Live Deployment Preview</h2>
+<h2>Deployment Summary</h2>
+
+<div id="summary">
 
 <div class="summary-row">
-<span>Base Fee</span>
-<strong id="baseFee">10</strong>
+<span>Total EVOZX Fee</span>
+<strong id="evozxFee">0</strong>
 </div>
 
 <div class="summary-row">
-<span>Dynamic Fee</span>
-<strong id="dynamicFee">0</strong>
+<span>Total EVOZ Value</span>
+<strong id="evozFee">0</strong>
 </div>
 
-<hr style="border:1px solid rgba(255,255,255,.08); margin:12px 0">
-
-<div class="summary-row">
-<span>Total Fee</span>
-<strong id="totalFee">10</strong>
 </div>
 
-<h3 style="margin-top:12px;">Status</h3>
-<div id="deployStatus">Idle</div>
-
-<button id="deployBtn" style="width:100%; margin-top:16px;">
-Deploy Token
-</button>
+<button id="deployBtn">Deploy Token</button>
 
 </section>
 
@@ -178,120 +174,9 @@ Deploy Token
 
 </div>
 
-<!-- CONFIRM MODAL -->
-<div id="confirmModal" style="
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.7);
-backdrop-filter:blur(8px);
-justify-content:center;
-align-items:center;
-z-index:999;
-">
-
-<div style="
-background:#111827;
-padding:20px;
-border-radius:12px;
-width:360px;
-border:1px solid rgba(255,255,255,.1);
-">
-
-<h3>Confirm Deployment</h3>
-
-<p style="color:#94a3b8; margin:10px 0;">
-Are you sure you want to deploy this token?
-This action will consume gas fee.
-</p>
-
-<div style="display:flex; gap:10px;">
-<button id="cancelDeploy" style="flex:1; background:#374151;">Cancel</button>
-<button id="confirmDeploy" style="flex:1;">Confirm</button>
-</div>
-
-</div>
-
-</div>
-
-<!-- SCRIPT -->
-<script>
-let step = 1;
-
-const steps = {
-1: "step-basic",
-2: "step-features",
-3: "step-advanced",
-4: "step-review"
-};
-
-function showStep(n){
-Object.values(steps).forEach(id=>{
-document.getElementById(id).style.display = "none";
-});
-
-document.getElementById(steps[n]).style.display = "block";
-}
-
-document.getElementById("nextBtn").onclick = () => {
-if(step < 4) step++;
-showStep(step);
-updatePreview();
-};
-
-document.getElementById("backBtn").onclick = () => {
-if(step > 1) step--;
-showStep(step);
-};
-
-function updatePreview(){
-
-const name = document.getElementById("name").value || "-";
-const symbol = document.getElementById("symbol").value || "-";
-const supply = document.getElementById("supply").value || "-";
-
-document.getElementById("reviewBox").innerHTML =
-`<p><b>${name}</b> (${symbol})</p>
-<p>Supply: ${supply}</p>`;
-
-let dynamic = 0;
-
-if(document.getElementById("burnable").checked) dynamic += 2;
-if(document.getElementById("mintable").checked) dynamic += 2;
-if(document.getElementById("maxTx").checked) dynamic += 1;
-
-document.getElementById("dynamicFee").textContent = dynamic;
-document.getElementById("totalFee").textContent = 10 + dynamic;
-}
-
-document.getElementById("deployBtn").onclick = () => {
-document.getElementById("confirmModal").style.display = "flex";
-};
-
-document.getElementById("cancelDeploy").onclick = () => {
-document.getElementById("confirmModal").style.display = "none";
-};
-
-document.getElementById("confirmDeploy").onclick = async () => {
-
-document.getElementById("deployStatus").textContent = "Deploying...";
-
-setTimeout(()=>{
-document.getElementById("deployStatus").textContent = "Success ✓";
-document.getElementById("confirmModal").style.display = "none";
-},2500);
-
-};
-
-document.querySelectorAll("input").forEach(i=>{
-i.addEventListener("input", updatePreview);
-});
-
-showStep(1);
-updatePreview();
-</script>
+<!-- ================= SCRIPTS ================= -->
 <script type="module" src="./js/app.js"></script>
 <script type="module" src="./js/main.js"></script>
-  
+
 </body>
 </html>
