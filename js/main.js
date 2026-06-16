@@ -1,7 +1,3 @@
-import { initFeeCalculator } from "./fee-realtime.js";
-
-initFeeCalculator();
-
 import {
     connectWallet,
     getSigner,
@@ -26,6 +22,10 @@ import {
 import {
     CONFIG
 } from "./config.js";
+
+import { initFeeCalculator } from "./fee-realtime.js";
+
+initFeeCalculator();
 
 const connectBtn = document.getElementById("connectBtn");
 const deployBtn = document.getElementById("deployBtn");
