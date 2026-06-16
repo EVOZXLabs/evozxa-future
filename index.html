@@ -8,7 +8,6 @@
 
 <link rel="stylesheet" href="./css/app.css">
 
-<!-- FONT -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -18,11 +17,9 @@
 
 <body>
 
-<!-- BACKGROUND LAYERS (ORDER FIXED) -->
-<canvas id="matrix"></canvas>
+<!-- CLEAN BACKGROUND ONLY (NO MATRIX / NO SCANLINES) -->
 <div class="bg-grid"></div>
 <div class="bg-glow"></div>
-<div class="scanlines"></div>
 
 <div id="app">
 
@@ -45,17 +42,16 @@
 <h1 id="heroText">Create Professional Tokens On EVOZ</h1>
 
 <p>
-Deploy, Verify and Manage smart contracts directly
-on EVOZ Mainnet.
+Deploy, Verify and Manage smart contracts directly on EVOZ Mainnet.
 </p>
 
-<!-- STATUS (FIXED OUT OF GRID) -->
+<!-- SYSTEM STATUS (CLEAN BACKEND STYLE) -->
 <div class="status-indicator">
 <span class="dot"></span>
 <span id="statusText">SYSTEM READY</span>
 </div>
 
-<!-- WALLET INFO -->
+<!-- WALLET PANEL -->
 <div id="walletInfo" class="wallet-info">
 
 <div class="wallet-item">
@@ -77,10 +73,10 @@ on EVOZ Mainnet.
 
 </section>
 
-<!-- GRID -->
+<!-- MAIN GRID -->
 <div class="grid">
 
-<!-- LEFT CARD -->
+<!-- LEFT -->
 <section class="card">
 
 <h2>Token Configuration</h2>
@@ -139,7 +135,7 @@ on EVOZ Mainnet.
 
 </section>
 
-<!-- RIGHT CARD -->
+<!-- RIGHT -->
 <section class="card">
 
 <h2>Deployment Summary</h2>
@@ -168,48 +164,12 @@ on EVOZ Mainnet.
 
 </div>
 
-<!-- SCRIPTS -->
+<!-- SCRIPTS (KEEP YOUR LOGIC) -->
 <script type="module" src="./js/app.js"></script>
 <script type="module" src="./js/main.js"></script>
 
-<!-- MATRIX -->
 <script>
-const canvas = document.getElementById("matrix");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const letters = "01EVOZXFUTURE#@$%&*";
-const fontSize = 14;
-const columns = canvas.width / fontSize;
-
-const drops = Array.from({length: columns}, () => 1);
-
-function draw(){
-ctx.fillStyle = "rgba(0,0,0,0.08)";
-ctx.fillRect(0,0,canvas.width,canvas.height);
-
-ctx.fillStyle = "#d4af37";
-ctx.font = fontSize + "px monospace";
-
-for(let i=0;i<drops.length;i++){
-const text = letters[Math.floor(Math.random()*letters.length)];
-ctx.fillText(text,i*fontSize,drops[i]*fontSize);
-
-if(drops[i]*fontSize > canvas.height && Math.random()>0.975){
-drops[i]=0;
-}
-
-drops[i]++;
-}
-}
-
-setInterval(draw,33);
-</script>
-
-<!-- UI LOGIC -->
-<script>
+/* HERO TYPE EFFECT */
 const heroText = document.getElementById("heroText");
 const text = "Create Professional Tokens On EVOZ";
 let i = 0;
@@ -223,6 +183,7 @@ setTimeout(type, 60);
 }
 })();
 
+/* STATUS LOOP */
 const statusText = document.getElementById("statusText");
 
 setInterval(() => {
