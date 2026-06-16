@@ -1,438 +1,161 @@
 import { CONFIG } from "./config.js";
 
-export async function loadFactory(
-    signer
-) {
+/* =========================================================
+   CONTRACT LOADERS (FINAL SAFE VERSION)
+========================================================= */
 
-    const abi =
-        await fetch(
-            "./abi/factory.json"
-        ).then(
-            r => r.json()
-        );
+export async function loadFactory(signer) {
+    const abi = await fetch("./abi/factory.json").then(r => r.json());
 
     return new ethers.Contract(
         CONFIG.FACTORY,
         abi,
         signer
     );
-
 }
 
-export async function loadEvozx(
-    signer
-) {
-
-    const abi =
-        await fetch(
-            "./abi/evozx.json"
-        ).then(
-            r => r.json()
-        );
+export async function loadEvozx(signer) {
+    const abi = await fetch("./abi/evozx.json").then(r => r.json());
 
     return new ethers.Contract(
         CONFIG.EVOZX,
         abi,
         signer
     );
-
 }
 
-export async function loadExchange(
-    signer
-) {
-
-    const abi =
-        await fetch(
-            "./abi/exchange.json"
-        ).then(
-            r => r.json()
-        );
+export async function loadExchange(signer) {
+    const abi = await fetch("./abi/exchange.json").then(r => r.json());
 
     return new ethers.Contract(
         CONFIG.EXCHANGE,
         abi,
         signer
     );
-
 }
+
+/* =========================================================
+   SAFE DOM ACCESS (ANTI MOBILE CRASH)
+========================================================= */
+
+function val(id, fallback = "") {
+    const el = document.getElementById(id);
+    return el ? el.value : fallback;
+}
+
+function chk(id) {
+    const el = document.getElementById(id);
+    return el ? el.checked : false;
+}
+
+function num(id, max = null) {
+    const v = Number(val(id, 0) || 0);
+    if (max !== null) return Math.min(max, v);
+    return v;
+}
+
+/* =========================================================
+   FINAL CONFIG BUILDER (FACTORY SYNCED)
+========================================================= */
 
 export function buildTokenConfig() {
 
-    const marketingWalletInput =
-        document
-        .getElementById(
-            "marketingWallet"
-        )
-        ?.value
-        ?.trim();
-
-    const developmentWalletInput =
-        document
-        .getElementById(
-            "developmentWallet"
-        )
-        ?.value
-        ?.trim();
+    const marketingWallet = val("marketingWallet").trim();
+    const developmentWallet = val("developmentWallet").trim();
 
     return {
+        /* BASIC */
+        name: val("name").trim(),
+        symbol: val("symbol").trim().toUpperCase(),
+        supply: Number(val("supply") || 0),
 
-        name:
-        document
-        .getElementById("name")
-        ?.value
-        ?.trim() || "",
+        owner: ethers.ZeroAddress,
+        chainId: 0,
+        launchKitVersion: 1,
 
-        symbol:
-        document
-        .getElementById("symbol")
-        ?.value
-        ?.trim()
-        ?.toUpperCase() || "",
+        /* FEATURES */
+        burnable: chk("burnable"),
+        mintable: chk("mintable"),
+        ownershipEnabled: chk("ownership"),
 
-        supply:
-        Number(
-            document
-            .getElementById("supply")
-            ?.value || 0
-        ),
+        maxWalletEnabled: chk("maxWallet"),
+        maxTxEnabled: chk("maxTx"),
+        tradingControlEnabled: chk("tradingControl"),
+        tradingEnabled: chk("tradingEnabled"),
 
-        owner:
-        ethers.ZeroAddress,
+        /* TAX */
+        buyTaxEnabled: chk("buyTax"),
+        sellTaxEnabled: chk("sellTax"),
 
-        chainId:
-        0,
+        buyTax: num("buyTaxValue", 10),
+        sellTax: num("sellTaxValue", 10),
+        burnTaxShare: num("burnTaxShare", 100),
 
-        launchKitVersion:
-        0,
+        /* LIMITS */
+        maxWalletPercent: num("maxWalletValue", 100),
+        maxTxPercent: num("maxTxValue", 100),
 
-        burnable:
-        document
-        .getElementById("burnable")
-        ?.checked || false,
+        /* METADATA */
+        website: val("websiteUrl").trim(),
+        telegram: val("telegramUrl").trim(),
+        twitter: val("twitterUrl").trim(),
+        logoURI: val("logoUrl").trim(),
 
-        mintable:
-        document
-        .getElementById("mintable")
-        ?.checked || false,
-
-        ownershipEnabled:
-        document
-        .getElementById("ownership")
-        ?.checked || false,
-
-        website:
-        document
-        .getElementById("websiteUrl")
-        ?.value
-        ?.trim() || "",
-
-        telegram:
-        document
-        .getElementById("telegramUrl")
-        ?.value
-        ?.trim() || "",
-
-        twitter:
-        document
-        .getElementById("twitterUrl")
-        ?.value
-        ?.trim() || "",
-
-        logoURI:
-        document
-        .getElementById("logoUrl")
-        ?.value
-        ?.trim() || "",
-
-        maxWalletEnabled:
-        document
-        .getElementById("maxWallet")
-        ?.checked || false,
-
-        maxWalletPercent:
-        Math.min(
-            100,
-            Number(
-                document
-                .getElementById(
-                    "maxWalletValue"
-                )
-                ?.value || 0
-            )
-        ),
-
-        maxTxEnabled:
-        document
-        .getElementById("maxTx")
-        ?.checked || false,
-
-        maxTxPercent:
-        Math.min(
-            100,
-            Number(
-                document
-                .getElementById(
-                    "maxTxValue"
-                )
-                ?.value || 0
-            )
-        ),
-
-        tradingControlEnabled:
-        document
-        .getElementById(
-            "tradingControl"
-        )
-        ?.checked || false,
-
-        tradingEnabled:
-        document
-        .getElementById(
-            "tradingEnabled"
-        )
-        ?.checked || false,
-
-        buyTaxEnabled:
-        document
-        .getElementById("buyTax")
-        ?.checked || false,
-
-        buyTax:
-        Math.min(
-            10,
-            Number(
-                document
-                .getElementById(
-                    "buyTaxValue"
-                )
-                ?.value || 0
-            )
-        ),
-
-        sellTaxEnabled:
-        document
-        .getElementById("sellTax")
-        ?.checked || false,
-
-        sellTax:
-        Math.min(
-            10,
-            Number(
-                document
-                .getElementById(
-                    "sellTaxValue"
-                )
-                ?.value || 0
-            )
-        ),
-
-        burnTaxShare:
-        Math.min(
-            100,
-            Number(
-                document
-                .getElementById(
-                    "burnTaxShare"
-                )
-                ?.value || 0
-            )
-        ),
-
+        /* WALLETS */
         marketingWallet:
-
-        marketingWalletInput &&
-        ethers.isAddress(
-            marketingWalletInput
-        )
-        ?
-        marketingWalletInput
-        :
-        ethers.ZeroAddress,
+            ethers.isAddress(marketingWallet)
+                ? marketingWallet
+                : ethers.ZeroAddress,
 
         developmentWallet:
-
-        developmentWalletInput &&
-        ethers.isAddress(
-            developmentWalletInput
-        )
-        ?
-        developmentWalletInput
-        :
-        ethers.ZeroAddress
-
+            ethers.isAddress(developmentWallet)
+                ? developmentWallet
+                : ethers.ZeroAddress
     };
-
 }
 
-export function validateConfig(
-    config
-) {
+/* =========================================================
+   FINAL VALIDATION (STRICT BUT SAFE)
+========================================================= */
 
-    if(
-        !config.name
-    ){
+export function validateConfig(c) {
 
-        throw new Error(
-            "Token name required"
-        );
+    if (!c.name) throw new Error("Token name required");
 
+    if (!c.symbol) throw new Error("Token symbol required");
+
+    if (c.symbol.length < 2) throw new Error("Symbol too short");
+
+    if (c.supply <= 0) throw new Error("Supply must be greater than zero");
+
+    if (c.supply > 1_000_000_000_000)
+        throw new Error("Maximum supply is 1,000,000,000,000");
+
+    if (c.buyTax < 0 || c.buyTax > 10)
+        throw new Error("Buy tax max 10%");
+
+    if (c.sellTax < 0 || c.sellTax > 10)
+        throw new Error("Sell tax max 10%");
+
+    if (c.maxWalletEnabled) {
+        if (c.maxWalletPercent <= 0 || c.maxWalletPercent > 100)
+            throw new Error("Max Wallet must be 1–100%");
     }
 
-    if(
-        !config.symbol
-    ){
-
-        throw new Error(
-            "Token symbol required"
-        );
-
+    if (c.maxTxEnabled) {
+        if (c.maxTxPercent <= 0 || c.maxTxPercent > 100)
+            throw new Error("Max TX must be 1–100%");
     }
 
-    if(
-        config.symbol.length < 2
-    ){
-
-        throw new Error(
-            "Symbol too short"
-        );
-
-    }
-
-    if(
-        config.supply <= 0
-    ){
-
-        throw new Error(
-            "Supply must be greater than zero"
-        );
-
-    }
-
-    if(
-        config.supply >
-        1000000000000
-    ){
-
-        throw new Error(
-            "Maximum supply is 1,000,000,000,000"
-        );
-
-    }
-
-    if(
-        config.buyTax < 0 ||
-        config.buyTax > 10
-    ){
-
-        throw new Error(
-            "Buy tax max 10%"
-        );
-
-    }
-
-    if(
-        config.sellTax < 0 ||
-        config.sellTax > 10
-    ){
-
-        throw new Error(
-            "Sell tax max 10%"
-        );
-
-    }
-
-    if(
-        config.maxWalletEnabled &&
-        (
-            config.maxWalletPercent <= 0 ||
-            config.maxWalletPercent > 100
-        )
-    ){
-
-        throw new Error(
-            "Max Wallet must be between 1 and 100"
-        );
-
-    }
-
-    if(
-        config.maxTxEnabled &&
-        (
-            config.maxTxPercent <= 0 ||
-            config.maxTxPercent > 100
-        )
-    ){
-
-        throw new Error(
-            "Max Tx must be between 1 and 100"
-        );
-
-    }
-
-    if(
-        config.marketingWallet !==
-        ethers.ZeroAddress
-    ){
-
-        if(
-            !ethers.isAddress(
-                config.marketingWallet
-            )
-        ){
-
-            throw new Error(
-                "Invalid marketing wallet"
-            );
-
-        }
-
-    }
-
-    if(
-        config.developmentWallet !==
-        ethers.ZeroAddress
-    ){
-
-        if(
-            !ethers.isAddress(
-                config.developmentWallet
-            )
-        ){
-
-            throw new Error(
-                "Invalid development wallet"
-            );
-
-        }
-
-    }
-
-    if(
-        config.buyTaxEnabled ||
-        config.sellTaxEnabled
-    ){
+    if (c.buyTaxEnabled || c.sellTaxEnabled) {
 
         const hasReceiver =
+            c.burnTaxShare > 0 ||
+            c.marketingWallet !== ethers.ZeroAddress ||
+            c.developmentWallet !== ethers.ZeroAddress;
 
-            config.burnTaxShare > 0 ||
-
-            config.marketingWallet !==
-            ethers.ZeroAddress ||
-
-            config.developmentWallet !==
-            ethers.ZeroAddress;
-
-        if(
-            !hasReceiver
-        ){
-
-            throw new Error(
-                "Tax receiver missing"
-            );
-
+        if (!hasReceiver) {
+            throw new Error("Tax receiver missing");
         }
-
     }
-
 }
