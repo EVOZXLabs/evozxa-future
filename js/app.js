@@ -8,16 +8,20 @@ import { CONFIG } from "./config.js";
 // =========================================================
 window.toggleAcc = (el) => {
     const content = el.nextElementSibling;
-    content.style.display = (content.style.display === "block") ? "none" : "block";
+    if (content) {
+        content.style.display = (content.style.display === "block") ? "none" : "block";
+    }
 };
 
 window.toggleInput = (checkbox) => {
     const wrapper = checkbox.closest('.feature-wrapper');
-    const input = wrapper.querySelector('.hidden-input');
-    if (input) {
-        input.style.display = checkbox.checked ? "block" : "none";
-        input.disabled = !checkbox.checked;
-        if (!checkbox.checked) input.value = "";
+    if (wrapper) {
+        const input = wrapper.querySelector('.hidden-input');
+        if (input) {
+            input.style.display = checkbox.checked ? "block" : "none";
+            input.disabled = !checkbox.checked;
+            if (!checkbox.checked) input.value = "";
+        }
     }
     updateFee();
 };
@@ -27,18 +31,23 @@ window.toggleInput = (checkbox) => {
 // =========================================================
 const connectBtn = document.getElementById("connectBtn");
 
-connectBtn.addEventListener("click", async () => {
+connectBtn?.addEventListener("click", async () => {
     try {
         const wallet = await connectWallet();
         if (!wallet) return;
 
         const shortAddress = wallet.address.slice(0, 6) + "..." + wallet.address.slice(-4);
         connectBtn.textContent = shortAddress;
-        document.getElementById("walletAddress").textContent = shortAddress;
+        
+        const addrEl = document.getElementById("walletAddress");
+        if (addrEl) addrEl.textContent = shortAddress;
 
         const balances = await loadBalances(wallet.provider, wallet.address);
-        document.getElementById("evozBalance").textContent = Number(balances.evoz).toFixed(4);
-        document.getElementById("evozxBalance").textContent = Number(balances.evozx).toFixed(4);
+        const evozEl = document.getElementById("evozBalance");
+        const evozxEl = document.getElementById("evozxBalance");
+        
+        if (evozEl) evozEl.textContent = Number(balances.evoz).toFixed(4);
+        if (evozxEl) evozxEl.textContent = Number(balances.evozx).toFixed(4);
     } catch (error) {
         console.error(error);
         alert(error.message || "Wallet connection failed");
@@ -49,6 +58,9 @@ connectBtn.addEventListener("click", async () => {
 // 3. AUTO FEE CALCULATOR (FROM FACTORY)
 // =========================================================
 async function updateFee() {
+    const feeEl = document.getElementById("evozxFee");
+    const valEl = document.getElementById("evozFee");
+    
     try {
         const signer = getSigner();
         if (!signer) return;
@@ -56,17 +68,16 @@ async function updateFee() {
         const factory = await loadFactory(signer);
         const config = buildTokenConfig(getAddress());
         
-        // Ambil biaya langsung dari Smart Contract
         const fee = await factory.getDeploymentFee(config);
         
-        document.getElementById("evozxFee").textContent = fee.toString();
-        document.getElementById("evozFee").textContent = (Number(fee) * 5).toString();
+        if (feeEl) feeEl.textContent = fee.toString();
+        if (valEl) valEl.textContent = (Number(fee) * 5).toString();
     } catch (err) {
-        console.log("Waiting for valid config...");
+        console.log("Fee calculation pending...");
     }
 }
 
-// Debounce agar tidak spam update saat mengetik
+// Debounce untuk performa optimal
 const debounce = (fn, delay) => {
     let t;
     return (...args) => {
@@ -85,7 +96,7 @@ document.addEventListener("input", (e) => { if (e.target.tagName === "INPUT") de
 // =========================================================
 const deployBtn = document.getElementById("deployBtn");
 
-deployBtn.addEventListener("click", async () => {
+deployBtn?.addEventListener("click", async () => {
     try {
         deployBtn.disabled = true;
         const signer = getSigner();
