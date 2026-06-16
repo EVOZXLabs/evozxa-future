@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>EVOZXA FUTURE</title>
 
 <link rel="stylesheet" href="./css/app.css">
-
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
 </head>
 
@@ -15,32 +13,23 @@
 
 <div id="app">
 
-<!-- ================= TOPBAR ================= -->
 <header class="topbar">
-
 <div class="brand">
-<img src="./images/logo.png" alt="EVOZXA">
+<img src="./images/logo.png" />
 <span>EVOZXA FUTURE</span>
 </div>
 
 <button id="connectBtn">Connect Wallet</button>
-
 </header>
 
 <main class="container">
 
-<!-- ================= HERO ================= -->
+<!-- HERO -->
 <section class="hero">
-
 <h1>Create Professional Tokens On EVOZ</h1>
+<p>Deploy smart contracts with full control wizard system.</p>
 
-<p>
-Deploy, Verify and Manage smart contracts directly on EVOZ Mainnet.
-</p>
-
-<!-- WALLET STATUS -->
 <div id="walletInfo" class="wallet-info">
-
 <div class="wallet-item">
 <span>Wallet</span>
 <strong id="walletAddress">Not Connected</strong>
@@ -55,98 +44,121 @@ Deploy, Verify and Manage smart contracts directly on EVOZ Mainnet.
 <span>EVOZX</span>
 <strong id="evozxBalance">0.00</strong>
 </div>
-
 </div>
-
-<!-- DEPLOY STATUS (IMPORTANT FOR JS SYNC) -->
-<div id="deployStatus" class="status-indicator">
-<span class="dot"></span>
-<span>READY</span>
-</div>
-
 </section>
 
-<!-- ================= GRID ================= -->
+<!-- WIZARD WRAPPER -->
 <div class="grid">
 
-<!-- LEFT PANEL -->
+<!-- LEFT: WIZARD -->
 <section class="card">
 
-<h2>Token Configuration</h2>
+<h2>Token Launch Wizard</h2>
+
+<!-- STEP INDICATOR -->
+<div id="stepIndicator">
+Step <span id="stepNow">1</span> / 4
+</div>
 
 <form id="tokenForm">
 
-<!-- BASIC -->
-<input id="name" type="text" placeholder="Token Name"/>
-<input id="symbol" type="text" placeholder="Symbol"/>
-<input id="supply" type="number" placeholder="Total Supply"/>
+<!-- ================= STEP 1 ================= -->
+<div class="wizard-step" data-step="1">
 
-<!-- FEATURES -->
-<div class="features-box">
+<h3>Basic Info</h3>
 
-<h3>Features</h3>
-
-<label><input type="checkbox" id="burnable"> Burnable</label>
-<label><input type="checkbox" id="mintable"> Mintable</label>
-<label><input type="checkbox" id="ownership"> Ownership</label>
-<label><input type="checkbox" id="maxWallet"> Max Wallet</label>
-<label><input type="checkbox" id="maxTx"> Max TX</label>
-<label><input type="checkbox" id="tradingControl"> Trading Control</label>
-<label><input type="checkbox" id="buyTax"> Buy Tax</label>
-<label><input type="checkbox" id="sellTax"> Sell Tax</label>
-<label><input type="checkbox" id="website"> Website</label>
-<label><input type="checkbox" id="telegram"> Telegram</label>
-<label><input type="checkbox" id="twitter"> Twitter</label>
-<label><input type="checkbox" id="logo"> Logo</label>
+<input id="name" placeholder="Token Name" />
+<input id="symbol" placeholder="Symbol" />
+<input id="supply" type="number" placeholder="Total Supply" />
 
 </div>
 
-<!-- METADATA -->
-<div class="advanced-box">
+<!-- ================= STEP 2 ================= -->
+<div class="wizard-step" data-step="2" style="display:none">
+
+<h3>Features</h3>
+
+<div class="features-box">
+
+<label><input type="checkbox" id="burnable">Burnable</label>
+<label><input type="checkbox" id="mintable">Mintable</label>
+<label><input type="checkbox" id="ownership">Ownership</label>
+<label><input type="checkbox" id="maxWallet">Max Wallet</label>
+<label><input type="checkbox" id="maxTx">Max TX</label>
+<label><input type="checkbox" id="tradingControl">Trading Control</label>
+<label><input type="checkbox" id="buyTax">Buy Tax</label>
+<label><input type="checkbox" id="sellTax">Sell Tax</label>
+
+</div>
+
+</div>
+
+<!-- ================= STEP 3 ================= -->
+<div class="wizard-step" data-step="3" style="display:none">
 
 <h3>Metadata</h3>
 
-<input id="websiteUrl" type="text" placeholder="Website URL"/>
-<input id="telegramUrl" type="text" placeholder="Telegram URL"/>
-<input id="twitterUrl" type="text" placeholder="Twitter URL"/>
-<input id="logoUrl" type="text" placeholder="Logo URL"/>
+<input id="websiteUrl" placeholder="Website URL" />
+<input id="telegramUrl" placeholder="Telegram URL" />
+<input id="twitterUrl" placeholder="Twitter URL" />
+<input id="logoUrl" placeholder="Logo URL" />
 
-<h3 class="section-space">Advanced Settings</h3>
+<h3>Tax Settings</h3>
 
-<input id="buyTaxValue" type="number" placeholder="Buy Tax %"/>
-<input id="sellTaxValue" type="number" placeholder="Sell Tax %"/>
-<input id="maxWalletValue" type="number" placeholder="Max Wallet %"/>
-<input id="maxTxValue" type="number" placeholder="Max TX %"/>
-<input id="burnTaxShare" type="number" placeholder="Burn Tax Share %"/>
-<input id="marketingWallet" type="text" placeholder="Marketing Wallet"/>
-<input id="developmentWallet" type="text" placeholder="Development Wallet"/>
+<input id="buyTaxValue" type="number" placeholder="Buy Tax %" />
+<input id="sellTaxValue" type="number" placeholder="Sell Tax %" />
+<input id="burnTaxShare" type="number" placeholder="Burn Tax %" />
+
+<h3>Wallets</h3>
+
+<input id="marketingWallet" placeholder="Marketing Wallet" />
+<input id="developmentWallet" placeholder="Development Wallet" />
+
+</div>
+
+<!-- ================= STEP 4 ================= -->
+<div class="wizard-step" data-step="4" style="display:none">
+
+<h3>Advanced Limits</h3>
+
+<label><input type="checkbox" id="maxWallet">Enable Max Wallet</label>
+<input id="maxWalletValue" type="number" placeholder="Max Wallet %" />
+
+<label><input type="checkbox" id="maxTx">Enable Max TX</label>
+<input id="maxTxValue" type="number" placeholder="Max TX %" />
 
 </div>
 
 </form>
 
+<!-- WIZARD NAV -->
+<div style="margin-top:20px; display:flex; gap:10px;">
+
+<button id="prevStep">Back</button>
+<button id="nextStep">Next</button>
+
+</div>
+
 </section>
 
-<!-- RIGHT PANEL -->
+<!-- RIGHT: SUMMARY -->
 <section class="card">
 
-<h2>Deployment Summary</h2>
-
-<div id="summary">
+<h2>Live Deployment Summary</h2>
 
 <div class="summary-row">
-<span>Total EVOZX Fee</span>
-<strong id="evozxFee">--</strong>
+<span>Estimated EVOZX Fee</span>
+<strong id="evozxFee">0</strong>
 </div>
 
 <div class="summary-row">
-<span>Total EVOZ Value</span>
-<strong id="evozFee">--</strong>
+<span>Estimated EVOZ Value</span>
+<strong id="evozFee">0</strong>
 </div>
 
-</div>
-
-<button id="deployBtn">Deploy Token</button>
+<button id="deployBtn" style="margin-top:20px; width:100%">
+Deploy Token
+</button>
 
 </section>
 
@@ -156,9 +168,9 @@ Deploy, Verify and Manage smart contracts directly on EVOZ Mainnet.
 
 </div>
 
-<!-- SCRIPTS -->
 <script type="module" src="./js/app.js"></script>
 <script type="module" src="./js/main.js"></script>
+<script type="module" src="./js/fee-realtime.js"></script>
 
 </body>
 </html>
