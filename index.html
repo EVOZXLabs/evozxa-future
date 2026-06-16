@@ -105,38 +105,12 @@ Mintable
 Ownership
 </label>
 
-<label>
-<input type="checkbox" id="maxWallet">
-Max Wallet
-</label>
-
-<label>
-<input type="checkbox" id="maxTx">
-Max TX
-</label>
-
-<label>
-<input type="checkbox" id="tradingControl">
-Trading Control
-</label>
-
-<label>
-<input type="checkbox" id="buyTax">
-Buy Tax
-</label>
-
-<label>
-<input type="checkbox" id="sellTax">
-Sell Tax
-</label>
-
 </div>
 
 <div class="advanced-box">
 
 <h3>Metadata</h3>
 
-<!-- ACCORDION ITEMS GROUP -->
 <div class="accordion-item">
 <label for="website">
 <input type="checkbox" id="website">
@@ -197,29 +171,73 @@ placeholder="Logo URL"
 Advanced Settings
 </h3>
 
-<input
-id="buyTaxValue"
-type="number"
-placeholder="Buy Tax %"
-/>
-
-<input
-id="sellTaxValue"
-type="number"
-placeholder="Sell Tax %"
-/>
-
+<div class="accordion-item">
+<label for="maxWallet">
+<input type="checkbox" id="maxWallet">
+Max Wallet
+</label>
+<div class="accordion-content">
 <input
 id="maxWalletValue"
 type="number"
 placeholder="Max Wallet %"
 />
+</div>
+</div>
 
+<div class="accordion-item">
+<label for="maxTx">
+<input type="checkbox" id="maxTx">
+Max TX
+</label>
+<div class="accordion-content">
 <input
 id="maxTxValue"
 type="number"
 placeholder="Max TX %"
 />
+</div>
+</div>
+
+<div class="accordion-item">
+<label for="tradingControl">
+<input type="checkbox" id="tradingControl">
+Trading Control
+</label>
+<div class="accordion-content">
+<p style="font-size: 13px; color: var(--muted); margin-bottom: 14px; font-style: italic;">
+* Enables pausing/unpausing contract transactions.
+</p>
+</div>
+</div>
+
+<div class="accordion-item">
+<label for="buyTax">
+<input type="checkbox" id="buyTax">
+Buy Tax
+</label>
+<div class="accordion-content">
+<input
+id="buyTaxValue"
+type="number"
+placeholder="Buy Tax %"
+/>
+</div>
+</div>
+
+<div class="accordion-item">
+<label for="sellTax">
+<input type="checkbox" id="sellTax">
+Sell Tax
+</label>
+<div class="accordion-content">
+<input
+id="sellTaxValue"
+type="number"
+placeholder="Sell Tax %"
+/>
+</div>
+</div>
 
 <input
 id="burnTaxShare"
@@ -277,6 +295,6 @@ Deploy Token
 
 <script type="module" src="./js/app.js"></script>
 <script type="module" src="./js/main.js"></script>
-<script type="module" src="./js/wizard.js"></script>
+
 </body>
 </html>
