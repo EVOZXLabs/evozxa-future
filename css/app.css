@@ -1,20 +1,21 @@
 :root{
 --bg:#05070d;
---surface:rgba(13,19,32,.75);
+--surface:rgba(13,19,32,.72);
 --border:rgba(255,255,255,.08);
 
---gold:#00f5ff;
---blue:#ff00ff;
+--gold:#d4af37;
+--blue:#2563eb;
 
 --text:#ffffff;
 --muted:#94a3b8;
 
---glow1:#00f5ff;
---glow2:#ff00ff;
---glow3:#7c3aed;
+--glow-gold:rgba(212,175,55,.45);
+--glow-blue:rgba(37,99,235,.45);
 }
 
-/* GLOBAL */
+/* =========================
+   BASE
+========================= */
 *{
 margin:0;
 padding:0;
@@ -28,56 +29,55 @@ font-family:'Plus Jakarta Sans', sans-serif;
 overflow-x:hidden;
 }
 
-/* CYBER GRID BACKGROUND */
+/* =========================
+   BACKGROUND SYSTEM
+========================= */
 .bg-grid{
 position:fixed;
 inset:0;
 background-image:
-linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
-linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
 background-size:60px 60px;
-opacity:.2;
+opacity:.12;
 pointer-events:none;
 z-index:0;
 }
 
-/* GLOW ORBS */
 .bg-glow{
 position:fixed;
 inset:-200px;
 background:
-radial-gradient(circle at 20% 20%, var(--glow1), transparent 40%),
-radial-gradient(circle at 80% 30%, var(--glow2), transparent 40%),
-radial-gradient(circle at 50% 80%, var(--glow3), transparent 40%);
-filter:blur(80px);
-opacity:.25;
-animation:floatGlow 8s ease-in-out infinite;
+radial-gradient(circle at 20% 20%, var(--glow-gold), transparent 45%),
+radial-gradient(circle at 80% 30%, var(--glow-blue), transparent 45%);
+filter:blur(100px);
+opacity:.22;
 pointer-events:none;
 z-index:0;
 }
 
-@keyframes floatGlow{
-0%,100%{transform:translateY(0)}
-50%{transform:translateY(20px)}
-}
-
-/* APP LAYER */
+/* =========================
+   APP WRAPPER
+========================= */
 #app{
 position:relative;
 z-index:2;
+backdrop-filter:contrast(1.05) saturate(1.05);
 }
 
-/* TOPBAR */
+/* =========================
+   TOPBAR
+========================= */
 .topbar{
 display:flex;
 justify-content:space-between;
 align-items:center;
 padding:14px 20px;
-border-bottom:1px solid var(--border);
 position:sticky;
 top:0;
-background:rgba(5,7,13,.6);
-backdrop-filter:blur(20px);
+background:rgba(5,7,13,.75);
+backdrop-filter:blur(18px);
+border-bottom:1px solid var(--border);
 z-index:100;
 }
 
@@ -88,41 +88,136 @@ gap:12px;
 }
 
 .brand img{
-width:38px;
-height:38px;
-filter:drop-shadow(0 0 10px var(--glow1));
-animation:pulse 2s infinite;
+width:36px;
+height:36px;
+filter:drop-shadow(0 0 8px var(--glow-gold));
 }
 
 .brand span{
-text-shadow:0 0 10px var(--glow1);
 letter-spacing:1px;
+text-shadow:0 0 8px var(--glow-gold);
 }
 
-/* CONTAINER */
+/* =========================
+   CONTAINER
+========================= */
 .container{
 max-width:1400px;
 margin:auto;
 padding:24px;
 }
 
-/* HERO */
+/* =========================
+   HERO
+========================= */
 .hero h1{
-font-size:56px;
+font-size:54px;
 line-height:1.1;
 margin-bottom:16px;
 max-width:800px;
 text-shadow:
-0 0 10px var(--glow1),
-0 0 20px var(--glow2);
-animation:glitch 4s infinite;
+0 0 8px var(--glow-gold),
+0 0 14px var(--glow-blue);
 }
 
 .hero p{
 color:var(--muted);
 }
 
-/* WALLET */
+/* =========================
+   GRID
+========================= */
+.grid{
+display:grid;
+grid-template-columns:1fr 420px;
+gap:24px;
+}
+
+/* =========================
+   CARD SYSTEM
+========================= */
+.card{
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:18px;
+padding:24px;
+position:relative;
+overflow:hidden;
+transition:.25s ease;
+}
+
+.card::before{
+content:"";
+position:absolute;
+inset:-1px;
+background:linear-gradient(45deg,var(--gold),var(--blue));
+opacity:.12;
+filter:blur(14px);
+z-index:-1;
+}
+
+.card:hover{
+transform:translateY(-4px);
+}
+
+/* =========================
+   INPUT
+========================= */
+input{
+width:100%;
+margin-top:12px;
+padding:14px;
+background:rgba(17,24,39,.85);
+color:#fff;
+border:none;
+border-radius:12px;
+transition:.2s;
+}
+
+input:focus{
+outline:none;
+border:1px solid var(--gold);
+box-shadow:0 0 10px var(--glow-gold);
+}
+
+/* =========================
+   BUTTON
+========================= */
+button{
+cursor:pointer;
+border:none;
+padding:14px 18px;
+border-radius:12px;
+background:linear-gradient(135deg,var(--gold),var(--blue));
+color:#fff;
+font-weight:700;
+transition:.25s ease;
+position:relative;
+overflow:hidden;
+}
+
+button:hover{
+transform:scale(1.02);
+box-shadow:0 0 16px var(--glow-gold);
+}
+
+/* click effect */
+button:active::after{
+content:"";
+position:absolute;
+inset:0;
+background:radial-gradient(circle,rgba(255,255,255,.25),transparent 60%);
+animation:burst .35s ease-out;
+}
+
+@keyframes burst{
+from{transform:scale(0);opacity:1}
+to{transform:scale(2);opacity:0}
+}
+
+/* =========================
+   WALLET
+========================= */
 .wallet-info{
 margin-top:24px;
 display:grid;
@@ -135,273 +230,118 @@ background:var(--surface);
 border:1px solid var(--border);
 padding:14px;
 border-radius:14px;
-backdrop-filter:blur(10px);
-box-shadow:0 0 15px rgba(0,255,255,.05);
-transition:.3s;
+position:relative;
+transition:.25s;
+}
+
+.wallet-item::after{
+content:"";
+position:absolute;
+inset:0;
+border-radius:inherit;
+background:linear-gradient(45deg,var(--gold),var(--blue));
+opacity:.08;
+z-index:-1;
 }
 
 .wallet-item:hover{
 transform:translateY(-3px);
-box-shadow:0 0 25px rgba(255,0,255,.2);
 }
 
-/* GRID */
-.grid{
-display:grid;
-grid-template-columns:1fr 420px;
-gap:24px;
+/* =========================
+   FEATURES LIST (IMPORTANT FIX SAFE)
+========================= */
+.feature-list{
+display:flex;
+flex-direction:column;
+gap:10px;
+margin-top:16px;
 }
 
-/* CARD */
-.card{
-background:var(--surface);
-border:1px solid var(--border);
-border-radius:20px;
-padding:24px;
-backdrop-filter:blur(12px);
-transition:.25s;
-position:relative;
-overflow:hidden;
-}
-
-.card::before{
-content:"";
-position:absolute;
-inset:-2px;
-background:linear-gradient(45deg,var(--glow1),var(--glow2),var(--glow3));
-z-index:-1;
-opacity:.2;
-filter:blur(12px);
-}
-
-.card:hover{
-transform:translateY(-3px);
-}
-
-/* INPUT */
-input{
-width:100%;
-margin-top:12px;
-padding:14px;
-background:rgba(17,24,39,.8);
-color:white;
-border:none;
-border-radius:12px;
-transition:.3s;
-}
-
-input:focus{
-outline:none;
-box-shadow:0 0 10px var(--glow1);
-border:1px solid var(--glow1);
-}
-
-/* BUTTON */
-button{
+.feature-list label{
+display:flex;
+align-items:center;
+gap:12px;
+padding:10px 12px;
+border-radius:10px;
+background:rgba(255,255,255,.02);
+border:1px solid rgba(255,255,255,.05);
 cursor:pointer;
-border:none;
-padding:14px 18px;
-border-radius:12px;
-background:linear-gradient(135deg,var(--glow1),var(--glow2));
-color:white;
-font-weight:700;
-transition:.3s;
-text-shadow:0 0 10px rgba(0,0,0,.4);
 }
 
-button:hover{
-transform:scale(1.03);
-box-shadow:0 0 20px var(--glow2);
+.feature-list input[type="checkbox"]{
+width:18px;
+height:18px;
+accent-color:var(--gold);
+margin:0;
 }
 
-/* SUMMARY */
+/* =========================
+   SUMMARY
+========================= */
 .summary-row{
 display:flex;
 justify-content:space-between;
 margin-bottom:14px;
 }
 
-/* ANIMATIONS */
-@keyframes pulse{
-0%,100%{filter:drop-shadow(0 0 5px var(--glow1))}
-50%{filter:drop-shadow(0 0 15px var(--glow2))}
-}
-
-@keyframes glitch{
-0%{transform:translate(0)}
-20%{transform:translate(-1px,1px)}
-40%{transform:translate(1px,-1px)}
-60%{transform:translate(-1px,-1px)}
-80%{transform:translate(1px,1px)}
-100%{transform:translate(0)}
-}
-
 /* =========================
-   MATRIX BACKGROUND CANVAS
-========================= */
-#matrix{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:0;
-opacity:.12;
-pointer-events:none;
-}
-
-/* =========================
-   SCANLINES EFFECT
-========================= */
-.scanlines{
-position:fixed;
-inset:0;
-z-index:1;
-pointer-events:none;
-background:repeating-linear-gradient(
-0deg,
-rgba(255,255,255,0.03),
-rgba(255,255,255,0.03) 1px,
-transparent 2px,
-transparent 4px
-);
-animation:scanMove 6s linear infinite;
-mix-blend-mode:overlay;
-}
-
-@keyframes scanMove{
-0%{transform:translateY(0)}
-100%{transform:translateY(20px)}
-}
-
-/* =========================
-   ULTRA RGB BORDER GLOW
-========================= */
-.card,
-.wallet-item{
-position:relative;
-}
-
-.card::after,
-.wallet-item::after{
-content:"";
-position:absolute;
-inset:-1px;
-border-radius:inherit;
-background:linear-gradient(
-45deg,
-#00f5ff,
-#ff00ff,
-#7c3aed,
-#00f5ff
-);
-z-index:-1;
-filter:blur(10px);
-opacity:.25;
-animation:rgbShift 6s linear infinite;
-}
-
-@keyframes rgbShift{
-0%{filter:hue-rotate(0deg) blur(10px)}
-100%{filter:hue-rotate(360deg) blur(10px)}
-}
-
-/* =========================
-   STATUS INDICATOR
+   STATUS
 ========================= */
 .status-indicator{
 grid-column:1/-1;
 display:flex;
 align-items:center;
-gap:10px;
+gap:8px;
 font-size:12px;
-color:#00f5ff;
-letter-spacing:1px;
+color:var(--gold);
 }
 
 .dot{
-width:8px;
-height:8px;
+width:7px;
+height:7px;
 border-radius:50%;
-background:#00f5ff;
-box-shadow:0 0 10px #00f5ff;
-animation:pulseDot 1.2s infinite;
-}
-
-@keyframes pulseDot{
-0%,100%{opacity:1; transform:scale(1)}
-50%{opacity:.3; transform:scale(1.4)}
+background:var(--gold);
+box-shadow:0 0 8px var(--gold);
+animation:pulse 1.5s infinite;
 }
 
 /* =========================
-   BUTTON ENERGY BURST
+   ANIMATIONS (SUBTLE ONLY)
 ========================= */
-button{
-position:relative;
-overflow:hidden;
+@keyframes pulse{
+0%,100%{opacity:1}
+50%{opacity:.4}
 }
 
-button:active::after{
-content:"";
-position:absolute;
+/* =========================
+   BACKGROUND LAYERS
+========================= */
+#matrix,
+.scanlines{
+position:fixed;
 inset:0;
-background:radial-gradient(circle,rgba(255,255,255,.4),transparent 60%);
-animation:burst .4s ease-out;
+pointer-events:none;
+z-index:0;
 }
 
-@keyframes burst{
-from{transform:scale(0); opacity:1}
-to{transform:scale(2); opacity:0}
-}
-
-/* =========================
-   HOVER DEPTH SYSTEM
-========================= */
-.card, .wallet-item{
-transition:.25s ease;
-}
-
-.card:hover{
-transform:translateY(-6px) scale(1.01);
-box-shadow:0 20px 40px rgba(0,245,255,.08);
+/* scanline minimal */
+.scanlines{
+background:repeating-linear-gradient(
+0deg,
+rgba(255,255,255,0.02),
+rgba(255,255,255,0.02) 1px,
+transparent 2px,
+transparent 4px
+);
+opacity:.4;
+mix-blend-mode:overlay;
 }
 
 /* =========================
-   DEPLOY BUTTON CHARGING
+   MOBILE
 ========================= */
-#deployBtn{
-position:relative;
-overflow:hidden;
-}
-
-#deployBtn::before{
-content:"";
-position:absolute;
-left:-100%;
-top:0;
-width:100%;
-height:100%;
-background:linear-gradient(90deg,transparent,#00f5ff,transparent);
-animation:charge 2.5s infinite;
-}
-
-@keyframes charge{
-0%{left:-100%}
-100%{left:100%}
-}
-
-/* =========================
-   DEEP GLOW LAYER
-========================= */
-#app{
-position:relative;
-z-index:2;
-backdrop-filter:contrast(1.1) saturate(1.2);
-}
-
-/* MOBILE */
 @media(max-width:900px){
-
 .grid{
 grid-template-columns:1fr;
 }
@@ -413,5 +353,4 @@ font-size:34px;
 .wallet-info{
 grid-template-columns:1fr;
 }
-
 }
