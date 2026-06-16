@@ -9,10 +9,6 @@ loadBalances
 } from "./balance.js";
 
 import {
-calculateFee
-} from "./pricing.js";
-
-import {
 loadFactory,
 loadEvozx,
 buildTokenConfig,
