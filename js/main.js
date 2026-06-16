@@ -2,223 +2,440 @@ import {
     connectWallet,
     getSigner,
     getAddress
-} from "./wallet.js";
+}
+from "./wallet.js";
 
 import {
     loadBalances
-} from "./balance.js";
+}
+from "./balance.js";
 
 import {
     loadFactory,
     loadEvozx,
     buildTokenConfig,
     validateConfig
-} from "./deploy.js";
+}
+from "./deploy.js";
 
 import {
     buyMissingEVOZX
-} from "./exchange.js";
+}
+from "./exchange.js";
 
 import {
     CONFIG
-} from "./config.js";
-
-import { initFeeCalculator } from "./fee-realtime.js";
-
-initFeeCalculator();
-
-const connectBtn = document.getElementById("connectBtn");
-const deployBtn = document.getElementById("deployBtn");
-
-function setDeployStatus(text) {
-    console.log("[DEPLOY]", text);
-
-    const el = document.getElementById("deployStatus");
-    if (el) el.textContent = text;
 }
+from "./config.js";
 
-/* =====================================================
-   WALLET CONNECT
-===================================================== */
-connectBtn?.addEventListener("click", async () => {
-    try {
-        const wallet = await connectWallet();
-        if (!wallet) return;
 
-        const shortAddress =
-            wallet.address.slice(0, 6) +
-            "..." +
-            wallet.address.slice(-4);
 
-        connectBtn.textContent = shortAddress;
+const connectBtn =
+document.getElementById(
+    "connectBtn"
+);
 
-        const walletEl = document.getElementById("walletAddress");
-        if (walletEl) walletEl.textContent = shortAddress;
+const deployBtn =
+document.getElementById(
+    "deployBtn"
+);
 
-        await refreshBalances();
 
-    } catch (error) {
-        console.error(error);
-        alert(error?.message || "Wallet connection failed");
-    }
-});
 
-/* =====================================================
-   BALANCE SYNC
-===================================================== */
-async function refreshBalances() {
-    const signer = getSigner();
-    if (!signer) return;
+function setDeployStatus(
+    text
+){
+    console.log(text);
 
-    const address = getAddress();
-
-    const balances = await loadBalances(
-        signer.provider,
-        address
+    const el =
+    document.getElementById(
+        "deployStatus"
     );
 
-    const evozEl = document.getElementById("evozBalance");
-    const evozxEl = document.getElementById("evozxBalance");
-
-    if (evozEl) evozEl.textContent = Number(balances.evoz || 0).toFixed(4);
-    if (evozxEl) evozxEl.textContent = Number(balances.evozx || 0).toFixed(4);
+    if(el){
+        el.textContent = text;
+    }
 }
 
-/* =====================================================
-   DEPLOY FLOW (FIXED FULL PIPELINE)
-===================================================== */
-deployBtn?.addEventListener("click", async () => {
-    try {
-        deployBtn.disabled = true;
 
-        const signer = getSigner();
-        if (!signer) throw new Error("Connect wallet first");
 
-        setDeployStatus("Loading contracts...");
+connectBtn?.addEventListener(
+    "click",
+    async () => {
 
-        const factory = await loadFactory(signer);
-        const evozx = await loadEvozx(signer);
+        try {
 
-        setDeployStatus("Reading configuration...");
+            const wallet =
+            await connectWallet();
 
-        const config = buildTokenConfig();
-        validateConfig(config);
+            if(!wallet) return;
 
-        setDeployStatus("Checking symbol availability...");
+            const shortAddress =
+                wallet.address.slice(0,6) +
+                "..." +
+                wallet.address.slice(-4);
 
-        const exists = await factory.symbolExists(config.symbol);
-        if (exists) {
-            throw new Error("Symbol already exists");
+            connectBtn.textContent =
+                shortAddress;
+
+            document.getElementById(
+                "walletAddress"
+            ).textContent =
+                shortAddress;
+
+            await refreshBalances();
+
         }
+        catch(error){
 
-        /* =================================================
-           FEE (CRITICAL FIX: BIGINT SAFE)
-        ================================================= */
-        setDeployStatus("Calculating deployment fee...");
+            console.error(error);
 
-        const fee = await factory.getDeploymentFee(config);
-
-        const address = getAddress();
-        const balance = await evozx.balanceOf(address);
-
-        console.log("FEE RAW:", fee.toString());
-
-        if (balance < fee) {
-            const missing = fee - balance;
-
-            setDeployStatus("Insufficient EVOZX, auto-buying...");
-
-            await buyMissingEVOZX(signer, missing);
-
-            const newBalance = await evozx.balanceOf(address);
-
-            if (newBalance < fee) {
-                throw new Error("Auto-buy EVOZX failed");
-            }
-        }
-
-        /* =================================================
-           APPROVAL
-        ================================================= */
-        setDeployStatus("Approving EVOZX...");
-
-        const allowance = await evozx.allowance(
-            address,
-            CONFIG.FACTORY
-        );
-
-        if (allowance < fee) {
-            const approveTx = await evozx.approve(
-                CONFIG.FACTORY,
-                fee
+            alert(
+                error.message ||
+                "Wallet connection failed"
             );
 
-            await approveTx.wait();
         }
 
-        /* =================================================
-           DEPLOY
-        ================================================= */
-        setDeployStatus("Deploying token...");
+    }
+);
 
-        const tx = await factory.createToken(config);
-        const receipt = await tx.wait();
 
-        /* =================================================
-           EVENT PARSE (SAFE)
-        ================================================= */
-        let tokenAddress = null;
 
-        for (const log of receipt.logs) {
-            try {
-                const parsed = factory.interface.parseLog(log);
+async function refreshBalances(){
 
-                if (parsed?.name === "TokenCreated") {
-                    tokenAddress = parsed.args.token;
-                    break;
+    const signer =
+    getSigner();
+
+    if(!signer) return;
+
+    const balances =
+    await loadBalances(
+        signer.provider,
+        getAddress()
+    );
+
+    document.getElementById(
+        "evozBalance"
+    ).textContent =
+    Number(
+        balances.evoz
+    ).toFixed(4);
+
+    document.getElementById(
+        "evozxBalance"
+    ).textContent =
+    Number(
+        balances.evozx
+    ).toFixed(4);
+
+}
+
+
+
+deployBtn?.addEventListener(
+    "click",
+    async () => {
+
+        try {
+
+            deployBtn.disabled =
+            true;
+
+            setDeployStatus(
+                "Preparing deployment..."
+            );
+
+
+
+            const signer =
+            getSigner();
+
+            if(!signer){
+
+                throw new Error(
+                    "Connect wallet first"
+                );
+
+            }
+
+
+
+            const factory =
+            await loadFactory(
+                signer
+            );
+
+            const evozx =
+            await loadEvozx(
+                signer
+            );
+
+
+
+            const config =
+            buildTokenConfig();
+
+
+
+            validateConfig(
+                config
+            );
+
+
+
+            setDeployStatus(
+                "Checking symbol..."
+            );
+
+
+
+            const exists =
+            await factory.symbolExists(
+                config.symbol
+            );
+
+
+
+            if(exists){
+
+                throw new Error(
+                    "Symbol already exists"
+                );
+
+            }
+
+
+
+            setDeployStatus(
+                "Calculating deployment fee..."
+            );
+
+
+
+            const fee =
+            await factory.getDeploymentFee(
+                config
+            );
+
+
+
+            console.log(
+                "Deployment Fee:",
+                ethers.formatEther(
+                    fee
+                ),
+                "EVOZX"
+            );
+
+
+
+            let evozxBalance =
+            await evozx.balanceOf(
+                getAddress()
+            );
+
+
+
+            if(evozxBalance < fee){
+
+                const missing =
+                    fee -
+                    evozxBalance;
+
+                setDeployStatus(
+                    "Buying EVOZX automatically..."
+                );
+
+
+
+                await buyMissingEVOZX(
+                    signer,
+                    missing
+                );
+
+
+
+                evozxBalance =
+                await evozx.balanceOf(
+                    getAddress()
+                );
+
+
+
+                if(
+                    evozxBalance < fee
+                ){
+
+                    throw new Error(
+                        "Auto EVOZX purchase failed"
+                    );
+
                 }
-            } catch (_) {}
-        }
 
-        if (!tokenAddress) {
-            throw new Error("TokenCreated event not found");
-        }
+            }
 
-        /* =================================================
-           FINAL
-        ================================================= */
-        await refreshBalances();
 
-        const explorer = `${CONFIG.EXPLORER}/token/${tokenAddress}`;
 
-        setDeployStatus("Deployment completed");
+            setDeployStatus(
+                "Approving EVOZX..."
+            );
 
-        alert(
+
+
+            const allowance =
+            await evozx.allowance(
+                getAddress(),
+                CONFIG.FACTORY
+            );
+
+
+
+            if(allowance < fee){
+
+                const approveTx =
+                await evozx.approve(
+                    CONFIG.FACTORY,
+                    fee
+                );
+
+                await approveTx.wait();
+
+            }
+
+
+
+            setDeployStatus(
+                "Deploying token..."
+            );
+
+
+
+            const tx =
+            await factory.createToken(
+                config
+            );
+
+
+
+            const receipt =
+            await tx.wait();
+
+
+
+            let tokenAddress =
+            null;
+
+
+
+            for(
+                const log of receipt.logs
+            ){
+
+                try{
+
+                    const parsed =
+                    factory.interface.parseLog(
+                        log
+                    );
+
+
+
+                    if(
+
+                        parsed &&
+                        parsed.name ===
+                        "TokenCreated"
+
+                    ){
+
+                        tokenAddress =
+                        parsed.args.token;
+
+                        break;
+
+                    }
+
+                }
+                catch(err){}
+            }
+
+
+
+            if(!tokenAddress){
+
+                throw new Error(
+                    "TokenCreated event not found"
+                );
+
+            }
+
+
+
+            await refreshBalances();
+
+
+
+            const explorerUrl =
+            `${CONFIG.EXPLORER}/token/${tokenAddress}`;
+
+
+
+            setDeployStatus(
+                "Deployment completed"
+            );
+
+
+
+            alert(
+
 `🚀 TOKEN DEPLOYED
 
-Token:
+Token Address:
 ${tokenAddress}
 
 Explorer:
-${explorer}`
-        );
+${explorerUrl}
 
-        console.log("DEPLOYED:", tokenAddress);
+Verification package can now be downloaded from LaunchFuture.`
 
-    } catch (error) {
+            );
 
-        console.error(error);
 
-        setDeployStatus("Deployment failed");
 
-        alert(
-            error?.reason ||
-            error?.shortMessage ||
-            error?.message ||
-            "Deployment failed"
-        );
+            console.log(
+                "TOKEN DEPLOYED",
+                tokenAddress
+            );
 
-    } finally {
-        deployBtn.disabled = false;
+        }
+        catch(error){
+
+            console.error(error);
+
+            setDeployStatus(
+                "Deployment failed"
+            );
+
+            alert(
+
+                error.reason ||
+
+                error.shortMessage ||
+
+                error.message ||
+
+                "Deployment failed"
+
+            );
+
+        }
+        finally{
+
+            deployBtn.disabled =
+            false;
+
+        }
+
     }
-});
+);
