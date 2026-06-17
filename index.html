@@ -1,109 +1,471 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EVOZXa FUTURE</title>
-    <link rel="stylesheet" href="./css/app.css">
-    <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+/>
+
+<title>EVOZXA FUTURE</title>
+
+<link
+    rel="stylesheet"
+    href="./css/app.css"
+/>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+
 </head>
+
 <body>
 
 <div id="app">
+
+    <!-- ========================================= -->
+    <!-- TOPBAR -->
+    <!-- ========================================= -->
+
     <header class="topbar">
+
         <div class="brand">
-            <img src="./images/logo.png" alt="EVOZXa">
-            <span>EVOZXa FUTURE</span>
+
+            <img
+                src="./images/logo.png"
+                alt="EVOZXA FUTURE"
+                class="logo"
+            >
+
+            <div class="brand-info">
+
+                <h1>EVOZXA FUTURE</h1>
+
+                <span>
+                    Deploy • Verify • Manage
+                </span>
+
+            </div>
+
         </div>
-        <button id="connectBtn">Connect Wallet</button>
+
+        <button id="connectBtn">
+            Connect Wallet
+        </button>
+
     </header>
 
+    <!-- ========================================= -->
+    <!-- MAIN -->
+    <!-- ========================================= -->
+
     <main class="container">
-        <section class="hero">
-            <h1>Launch Professional Tokens On EVOZ</h1>
-            <p>Deploy, Verify and Manage smart contracts directly on EVOZ Mainnet.</p>
-            <div id="walletInfo" class="wallet-info">
-                <div class="wallet-item"><span>Wallet</span><strong id="walletAddress">Not Connected</strong></div>
-                <div class="wallet-item"><span>EVOZ</span><strong id="evozBalance">0.00</strong></div>
-                <div class="wallet-item"><span>EVOZX</span><strong id="evozxBalance">0.00</strong></div>
-            </div>
-        </section>
 
         <div class="grid">
-            <section class="card">
-                <h2>Token Configuration</h2>
-                <form id="tokenForm">
-                    <input id="name" type="text" placeholder="Token Name">
-                    <input id="symbol" type="text" placeholder="Symbol">
-                    <input id="supply" type="number" placeholder="Total Supply">
 
-                    <div class="features-box">
-                        <h3>Features</h3>
-                        <div class="checkbox-grid">
-                            <label><input type="checkbox" id="burnable"> Burnable</label>
-                            <label><input type="checkbox" id="mintable"> Mintable</label>
-                            <label><input type="checkbox" id="ownership"> Ownership</label>
-                        </div>
-                    </div>
-
-                    <h3 class="section-space">Metadata</h3>
-                    <div id="metadataSection">
-                        <div class="feature-wrapper">
-                            <label><input type="checkbox" id="website" onchange="toggleInput(this)"> Website</label>
-                            <input id="websiteUrl" type="text" class="hidden-input" placeholder="Website URL" disabled>
-                        </div>
-                        <div class="feature-wrapper">
-                            <label><input type="checkbox" id="telegram" onchange="toggleInput(this)"> Telegram</label>
-                            <input id="telegramUrl" type="text" class="hidden-input" placeholder="Telegram URL" disabled>
-                        </div>
-                        <div class="feature-wrapper">
-                            <label><input type="checkbox" id="twitter" onchange="toggleInput(this)"> Twitter</label>
-                            <input id="twitterUrl" type="text" class="hidden-input" placeholder="Twitter URL" disabled>
-                        </div>
-                        <div class="feature-wrapper">
-                            <label><input type="checkbox" id="logo" onchange="toggleInput(this)"> Logo</label>
-                            <input id="logoUrl" type="text" class="hidden-input" placeholder="Logo URL" disabled>
-                        </div>
-                    </div>
-
-                    <h3 class="section-space">Advanced Settings</h3>
-                    <div id="advancedSection">
-                        <div class="feature-wrapper">
-                            <label><input type="checkbox" id="maxWallet" onchange="toggleInput(this)"> Max Wallet</label>
-                            <input id="maxWalletValue" type="number" class="hidden-input" placeholder="Max Wallet %" disabled>
-                        </div>
-                        <div class="feature-wrapper">
-                            <label><input type="checkbox" id="maxTx" onchange="toggleInput(this)"> Max TX</label>
-                            <input id="maxTxValue" type="number" class="hidden-input" placeholder="Max TX %" disabled>
-                        </div>
-                        <div class="feature-wrapper">
-                            <label><input type="checkbox" id="buyTax" onchange="toggleInput(this)"> Buy Tax</label>
-                            <input id="buyTaxValue" type="number" class="hidden-input" placeholder="Buy Tax %" disabled>
-                        </div>
-                        <div class="feature-wrapper">
-                            <label><input type="checkbox" id="sellTax" onchange="toggleInput(this)"> Sell Tax</label>
-                            <input id="sellTaxValue" type="number" class="hidden-input" placeholder="Sell Tax %" disabled>
-                        </div>
-                    </div>
-                </form>
-            </section>
+            <!-- ========================================= -->
+            <!-- LEFT COLUMN -->
+            <!-- ========================================= -->
 
             <section class="card">
-                <h2>Deployment Summary</h2>
-                <div id="summary">
-                    <div class="summary-row"><span>Total EVOZX Fee</span><strong id="evozxFee">10</strong></div>
-                    <div class="summary-row"><span>Total EVOZ Value</span><strong id="evozFee">50</strong></div>
+
+                <div class="card-header">
+
+                    <h2>
+                        Token Configuration
+                    </h2>
+
+                    <p>
+                        Create ERC20 Tokens on EVOZ Mainnet
+                    </p>
+
                 </div>
-                <button id="deployBtn">Deploy Token</button>
+
+                <form id="tokenForm">
+
+                    <input
+                        id="name"
+                        type="text"
+                        placeholder="Token Name"
+                    >
+
+                    <input
+                        id="symbol"
+                        type="text"
+                        placeholder="Token Symbol"
+                    >
+
+                    <input
+                        id="supply"
+                        type="number"
+                        placeholder="Total Supply"
+                    >
+
+                    <!-- ========================================= -->
+                    <!-- CORE FEATURES -->
+                    <!-- ========================================= -->
+
+                    <div class="accordion-item">
+
+                        <div
+                            class="accordion-header"
+                            onclick="toggleAcc(this)"
+                        >
+                            CORE FEATURES
+                        </div>
+
+                        <div class="accordion-content">
+
+                            <div class="feature-list">
+
+                                <div class="feature-wrapper">
+
+                                    <label class="feature-item">
+
+                                        <input
+                                            id="burnable"
+                                            type="checkbox"
+                                        >
+
+                                        <span>
+                                            Burnable
+                                        </span>
+
+                                    </label>
+
+                                </div>
+
+                                <div class="feature-wrapper">
+
+                                    <label class="feature-item">
+
+                                        <input
+                                            id="mintable"
+                                            type="checkbox"
+                                        >
+
+                                        <span>
+                                            Mintable
+                                        </span>
+
+                                    </label>
+
+                                </div>
+
+                                <div class="feature-wrapper">
+
+                                    <label class="feature-item">
+
+                                        <input
+                                            id="ownership"
+                                            type="checkbox"
+                                        >
+
+                                        <span>
+                                            Ownership Control
+                                        </span>
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ========================================= -->
+                    <!-- METADATA -->
+                    <!-- ========================================= -->
+
+                    <div class="accordion-item">
+
+                        <div
+                            class="accordion-header"
+                            onclick="toggleAcc(this)"
+                        >
+                            METADATA
+                        </div>
+
+                        <div class="accordion-content">
+
+                            <input
+                                id="websiteUrl"
+                                type="text"
+                                placeholder="Website URL"
+                            >
+
+                            <input
+                                id="telegramUrl"
+                                type="text"
+                                placeholder="Telegram URL"
+                            >
+
+                            <input
+                                id="twitterUrl"
+                                type="text"
+                                placeholder="Twitter / X URL"
+                            >
+
+                            <input
+                                id="logoUrl"
+                                type="text"
+                                placeholder="Logo URL"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <!-- ========================================= -->
+                    <!-- LIMITS -->
+                    <!-- ========================================= -->
+
+                    <div class="accordion-item">
+
+                        <div
+                            class="accordion-header"
+                            onclick="toggleAcc(this)"
+                        >
+                            LIMITS
+                        </div>
+
+                        <div class="accordion-content">
+
+                            <div class="limit-box">
+
+                                <label class="limit-label">
+
+                                    <input
+                                        id="maxWallet"
+                                        type="checkbox"
+                                    >
+
+                                    <span>
+                                        Enable Max Wallet
+                                    </span>
+
+                                </label>
+
+                                <input
+                                    id="maxWalletValue"
+                                    type="number"
+                                    placeholder="Max Wallet %"
+                                >
+
+                            </div>
+
+                            <div class="limit-box">
+
+                                <label class="limit-label">
+
+                                    <input
+                                        id="maxTx"
+                                        type="checkbox"
+                                    >
+
+                                    <span>
+                                        Enable Max Transaction
+                                    </span>
+
+                                </label>
+
+                                <input
+                                    id="maxTxValue"
+                                    type="number"
+                                    placeholder="Max Transaction %"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
             </section>
+
+            <!-- ========================================= -->
+            <!-- RIGHT SIDEBAR -->
+            <!-- ========================================= -->
+
+            <aside class="sidebar">
+
+                <!-- Wallet -->
+
+                <section class="card">
+
+                    <h2>
+                        Wallet
+                    </h2>
+
+                    <div class="wallet-box">
+
+                        <div class="wallet-row">
+
+                            <span>
+                                Address
+                            </span>
+
+                            <strong id="walletAddress">
+                                Not Connected
+                            </strong>
+
+                        </div>
+
+                        <div class="wallet-row">
+
+                            <span>
+                                EVOZ
+                            </span>
+
+                            <strong id="evozBalance">
+                                0.0000
+                            </strong>
+
+                        </div>
+
+                        <div class="wallet-row">
+
+                            <span>
+                                EVOZX
+                            </span>
+
+                            <strong id="evozxBalance">
+                                0.0000
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- Summary -->
+
+                <section class="card">
+
+                    <h2>
+                        Deployment Summary
+                    </h2>
+
+                    <div id="summary">
+
+                        <div class="summary-row">
+
+                            <span>
+                                Deployment Fee
+                            </span>
+
+                            <strong id="evozxFee">
+                                0
+                            </strong>
+
+                        </div>
+
+                        <div class="summary-row">
+
+                            <span>
+                                Required EVOZ
+                            </span>
+
+                            <strong id="evozFee">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                    <button id="deployBtn">
+                        Deploy Token
+                    </button>
+
+                    <div
+                        id="deployStatus"
+                        class="deploy-status"
+                    >
+                        Ready
+                    </div>
+
+                </section>
+
+                <!-- Result -->
+
+                <section
+                    id="deploymentResult"
+                    class="card hidden"
+                >
+
+                    <h2>
+                        Deployment Result
+                    </h2>
+
+                    <div class="result-box">
+
+                        <div class="wallet-row">
+
+                            <span>
+                                Token Address
+                            </span>
+
+                            <strong id="tokenAddress">
+                                -
+                            </strong>
+
+                        </div>
+
+                        <div class="wallet-row">
+
+                            <span>
+                                Explorer
+                            </span>
+
+                            <a
+                                id="explorerLink"
+                                target="_blank"
+                            >
+                                Open
+                            </a>
+
+                        </div>
+
+                        <div class="wallet-row">
+
+                            <span>
+                                Verification Package
+                            </span>
+
+                            <a
+                                id="verificationLink"
+                                target="_blank"
+                                download
+                            >
+                                Download
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
         </div>
+
     </main>
 
-    <footer class="dapp-footer">
-        <p>&copy; 2026 EVOZXLabs. All Rights Reserved.</p>
-    </footer>
 </div>
 
-<script type="module" src="./js/app.js"></script>
+<script
+    type="module"
+    src="./js/app.js"
+></script>
+
 </body>
 </html>
